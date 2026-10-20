@@ -8,7 +8,7 @@ from .interfaces import ILoyaltyPoolDetector
 class SharedLoyaltyDetector(ILoyaltyPoolDetector):
     # Детектор общих карт лояльности между закрытыми профилями форума и авиационной базой
 
-    def __init__(self, forum_json_path: str = "/home/daniil/DataScience/FrequentFlyerForum-Profiles.json"):
+    def __init__(self, forum_json_path: str = "../FrequentFlyerForum-Profiles.json"):
         self.forum_json_path = forum_json_path
 
     def detect(self, df: pd.DataFrame, min_passengers: int = 2) -> pd.DataFrame:

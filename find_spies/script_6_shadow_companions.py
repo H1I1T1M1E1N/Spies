@@ -3,8 +3,8 @@ import numpy as np
 import pandas as pd
 import scipy.sparse as sp
 
-DATASET_PATH = "MASTER_AIRLINES_DB_sorted.csv"
-OUTPUT_CSV = "spies_shadow_companions.csv"
+DATASET_PATH = "datasets/MASTER_AIRLINES_DB_sorted.csv"
+OUTPUT_CSV = "datasets/spies_shadow_companions.csv"
 MIN_SHARED_FLIGHTS = 4
 
 

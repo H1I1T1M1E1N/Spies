@@ -2,8 +2,8 @@ import pandas as pd
 import time
 from typing import Set
 
-DATASET_PATH = "MASTER_AIRLINES_DB_sorted.csv"
-OUTPUT_CSV = "spies_dual_identities.csv"
+DATASET_PATH = "datasets/MASTER_AIRLINES_DB_sorted.csv"
+OUTPUT_CSV = "datasets/spies_dual_identities.csv"
 
 
 class PassportPairClassifier:

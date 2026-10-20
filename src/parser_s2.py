@@ -400,6 +400,27 @@ def parse_boarding_folder_fast(folder_path, output_csv="boarding_data.csv"):
 
     return total_rows
 
+
+def parse_student2(json_path: str, yaml_path: str, boarding_folder: str) -> pd.DataFrame:
+    """Парсинг всех данных Student 2."""
+    print(f" Парсинг Student 2: JSON + YAML + Excel")
+
+    print("  - JSON (Forum Profiles)...")
+    df_json = parse_forum_json(json_path)
+    print(f"    JSON: {len(df_json)} строк")
+
+    print("  - YAML (SkyTeam Exchange)...")
+    df_yaml = parse_skyteam_yaml_fast(yaml_path)
+    print(f"    YAML: {len(df_yaml)} строк")
+
+    print("  - Excel (Boarding Passes)...")
+    df_boarding = parse_boarding_folder_fast(boarding_folder)
+    print(f"    Excel: {len(df_boarding)} строк")
+
+    df_combined = pd.concat([df_json, df_yaml, df_boarding], ignore_index=True)
+    print(f"✅ Student 2: всего {len(df_combined)} строк")
+    return df_combined
+
 # ============================================================
 # Главная функция
 # ============================================================

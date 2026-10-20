@@ -3,7 +3,7 @@ import time
 from konon_anal.dual_identity import detect_dual_identities
 
 #TODO: ты уже знаешь :)
-DATASET_PATH = "/home/daniil/DataScience/MASTER_AIRLINES_DB_sorted.csv"
+DATASET_PATH = "../MASTER_AIRLINES_DB_sorted.csv"
 
 
 def main():
@@ -29,7 +29,7 @@ def main():
     pd.set_option('display.width', 1000)
     print(spies.head(25).to_string(index=False))
 
-    output_path = "/home/daniil/DataScience/parsed_data/spies_dual_identities.csv"
+    output_path = "../spies_dual_identities.csv"
     spies.to_csv(output_path, index=False, encoding='utf-8')
     print(f"\nСписок 343 шпионов сохранен в: {output_path}")
 

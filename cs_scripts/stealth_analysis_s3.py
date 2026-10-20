@@ -3,8 +3,8 @@ import time
 from konon_anal.stealth_iqr import analyze_stealth_iqr
 
 #TODO: ВОВА, СЮДА СВОИ ПУТИ!
-DATASET_PATH = "/home/daniil/DataScience/MASTER_AIRLINES_DB_sorted.csv"
-PLOT_OUTPUT = "/home/daniil/DataScience/parsed_data/stealth_iqr_plot.png"
+DATASET_PATH = "../MASTER_AIRLINES_DB_sorted.csv"
+PLOT_OUTPUT = "../stealth_iqr_plot.png"
 
 def main():
     print(f"Загрузка данных: {DATASET_PATH} ...")

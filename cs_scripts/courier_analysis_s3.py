@@ -3,7 +3,7 @@ import pandas as pd
 from konon_anal.turnaround_flights import detect_couriers_graph
 
 # Укажи точный путь к общему датасету команды
-DATASET_PATH = "/home/daniil/DataScience/MASTER_AIRLINES_DB_sorted.csv"
+DATASET_PATH = "../MASTER_AIRLINES_DB_sorted.csv"
 
 
 def main():
@@ -32,7 +32,7 @@ def main():
     print(top_couriers.to_string(index=False))
 
     # Экспорт результатов для отчета
-    output_report = "/home/daniil/DataScience/parsed_data/top_couriers_report.csv"
+    output_report = "../top_couriers_report.csv"
     top_couriers.to_csv(output_report, index=False, encoding='utf-8')
     print(f"\nОтчет сохранен в: {output_report}")
 

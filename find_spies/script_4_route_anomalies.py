@@ -1,14 +1,14 @@
 import pandas as pd
 
-DATASET_PATH = "MASTER_AIRLINES_DB_sorted.csv"
-OUTPUT_TELEPORTS = "spies_teleports.csv"
-OUTPUT_ETERNAL_TRANSIT = "spies_eternal_transit.csv"
-OUTPUT_TAILS = "spies_surveillance_tails.csv"
+DATASET_PATH = "datasets/MASTER_AIRLINES_DB_sorted.csv"
+OUTPUT_TELEPORTS = "datasets/spies_teleports.csv"
+OUTPUT_ETERNAL_TRANSIT = "datasets/spies_eternal_transit.csv"
+OUTPUT_TAILS = "datasets/spies_surveillance_tails.csv"
 
 
-def main():
+def analyze_route_anomalies(df: pd.DataFrame):
     print("🔄 Загрузка и очистка данных...")
-    df = pd.read_csv(DATASET_PATH, sep=",", dtype=str, low_memory=False)
+    df = df.copy()
     df.columns = df.columns.str.strip()
 
     df["document_number"] = (
@@ -190,6 +190,9 @@ def main():
         ].to_csv(OUTPUT_TAILS, index=False, encoding="utf-8")
         print(f"✅ Подозрительные хвосты сохранены в '{OUTPUT_TAILS}' ({len(tails_grouped)} чел.)")
 
+def main():
+    df = pd.read_csv(DATASET_PATH, sep=",", dtype=str, low_memory=False)
+    analyze_route_anomalies(df)
 
 if __name__ == "__main__":
     main()

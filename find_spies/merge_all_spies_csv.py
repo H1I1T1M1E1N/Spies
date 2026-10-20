@@ -1,6 +1,15 @@
 import glob
 import os
+import sys
 import pandas as pd
+
+def get_resource_path(relative_path):
+    """Корректная работа путей и в dev, и в PyInstaller EXE."""
+    try:
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath("datasets")
+    return os.path.join(base_path, relative_path)
 
 OUTPUT_FINAL_CSV = "FINAL_SPIES_DOSSIER.csv"
 
@@ -12,18 +21,18 @@ CSV_FILES = [
     "spies_teleports.csv",
     "spies_eternal_transit.csv",
     "spies_surveillance_tails.csv",
-    "spies_shared_loyalty.csv",
     "spies_shadow_companions.csv",
     "spies_transit_exchange.csv",
     "spies_couriers_turnaround.csv",
     "spies_stealth_iqr.csv",
-    "spies_mutation_aliases.csv",     
-    "spies_pendulum_couriers.csv",
 ]
 
-def main():
+def merge_all_spies(output_dir: str = "datasets") -> str:
+    output_final_csv = os.path.join(output_dir, "FINAL_SPIES_DOSSIER.csv")
+    print(os.curdir)
     loaded_dfs = []
-    for file_path in CSV_FILES:
+    for file_name in CSV_FILES:
+        file_path = os.path.join(output_dir, file_name)
         if os.path.exists(file_path):
             df = pd.read_csv(file_path, dtype=str)
             df["source_file"] = file_path
@@ -69,7 +78,7 @@ def main():
     final_output = merged_dossier[
         ["anomalies_count", "document_number", "first_name", "last_name", "birth_date", "comment"]
     ]
-    final_output.to_csv(OUTPUT_FINAL_CSV, index=False, encoding="utf-8")
+    final_output.to_csv(output_final_csv, index=False, encoding="utf-8")
 
     print("\n" + "=" * 75)
     print(f"✅ ИТОГОВОЕ ДОСЬЕ СФОРМИРОВАНО: '{OUTPUT_FINAL_CSV}'")
@@ -82,7 +91,14 @@ def main():
         print(f"{i+1}. {row['first_name']} {row['last_name']} (Паспорт: {row['document_number']}) — Аномалий: {row['anomalies_count']}")
     
     print("=" * 75)
+    return output_final_csv
 
+def main():
+    output_dir = "datasets"
+    print("=" * 75)
+    print("📚 ОБЪЕДИНЕНИЕ ВСЕХ РЕЗУЛЬТАТОВ В ЕДИНОЕ ДОСЬЕ")
+    print("=" * 75)
+    merge_all_spies(output_dir)
 
 if __name__ == "__main__":
     main()

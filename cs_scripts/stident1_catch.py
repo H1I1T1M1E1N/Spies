@@ -3,7 +3,7 @@ import pandas as pd
 print("🕵️ Проверка безопасности: Поиск одинаковых паспортов у разных людей...\n")
 
 # 1. Загружаем базу
-df = pd.read_csv('MASTER_AIRLINES_DB.csv', low_memory=False)
+df = pd.read_csv('../MASTER_AIRLINES_DB_sorted.csv', low_memory=False)
 
 # 2. Отбрасываем строки, где номер паспорта пустой (нам они не нужны для этой проверки)
 df_valid_passports = df.dropna(subset=['document_number']).copy()

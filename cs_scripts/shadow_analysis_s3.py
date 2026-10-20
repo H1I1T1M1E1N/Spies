@@ -3,7 +3,7 @@ import time
 from konon_anal.shadow_matrix import detect_shadow_companions
 
 #TODO: ВОВА, СЮДА ВСТАВЬ СВОЙ ПУТЬ!!
-DATASET_PATH = "/home/daniil/DataScience/MASTER_AIRLINES_DB_sorted.csv"
+DATASET_PATH = "../MASTER_AIRLINES_DB_sorted.csv"
 
 def main():
     print(f"Загрузка базы данных: {DATASET_PATH} ...")

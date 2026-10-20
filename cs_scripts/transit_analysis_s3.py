@@ -3,7 +3,7 @@ import time
 from konon_anal.transit_exchange import detect_transit_exchanges
 
 #TODO: ВОВА, СЮДА СВОЙ ПУТЬ
-DATASET_PATH = "/home/daniil/DataScience/MASTER_AIRLINES_DB_sorted.csv"
+DATASET_PATH = "../MASTER_AIRLINES_DB_sorted.csv"
 
 def main():
     print(f"Загрузка базы данных: {DATASET_PATH} ...")

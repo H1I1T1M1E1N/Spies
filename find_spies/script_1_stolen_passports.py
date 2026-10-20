@@ -1,17 +1,15 @@
 import pandas as pd
 
-DATASET_PATH = "MASTER_AIRLINES_DB_sorted.csv"
-OUTPUT_CSV = "spies_stolen_passports.csv"
+DATASET_PATH = "datasets/MASTER_AIRLINES_DB_sorted.csv"
+OUTPUT_CSV = "datasets/spies_stolen_passports.csv"
 
 
 def clean_doc_series(series: pd.Series) -> pd.Series:
     return series.astype(str).str.replace(r"\.0$", "", regex=True).str.strip()
 
 
-def main():
+def analyze_stolen_passports(df: pd.DataFrame):
     print("🕵️ Проверка безопасности: Поиск одинаковых паспортов у разных людей...")
-    df = pd.read_csv(DATASET_PATH, dtype=str, low_memory=False)
-    df.columns = df.columns.str.strip()
 
     df_valid = df.dropna(subset=["document_number", "first_name", "last_name"]).copy()
     df_valid["document_number"] = clean_doc_series(df_valid["document_number"])
@@ -67,6 +65,10 @@ def main():
     result_df.to_csv(OUTPUT_CSV, index=False, encoding="utf-8")
     print(f"🚨 Найдено записей: {len(result_df)}. Отчет сохранен в '{OUTPUT_CSV}'.")
 
+def main():
+    df = pd.read_csv(DATASET_PATH, dtype=str, low_memory=False)
+    df.columns = df.columns.str.strip()
+    analyze_stolen_passports(df)
 
 if __name__ == "__main__":
     main()

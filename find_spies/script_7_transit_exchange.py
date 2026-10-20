@@ -4,8 +4,8 @@ import pandas as pd
 import scipy.sparse as sp
 from typing import Tuple, Dict, List
 
-DATASET_PATH = "MASTER_AIRLINES_DB_sorted.csv"
-OUTPUT_CSV = "spies_transit_exchange.csv"
+DATASET_PATH = "datasets/MASTER_AIRLINES_DB_sorted.csv"
+OUTPUT_CSV = "datasets/spies_transit_exchange.csv"
 MIN_MEETINGS = 4
 
 

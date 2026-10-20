@@ -3,9 +3,9 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from typing import Tuple, Optional
 
-DATASET_PATH = "MASTER_AIRLINES_DB_sorted.csv"
-PLOT_OUTPUT = "stealth_iqr_plot.png"
-OUTPUT_CSV = "spies_stealth_iqr.csv"
+DATASET_PATH = "datasets/MASTER_AIRLINES_DB_sorted.csv"
+PLOT_OUTPUT = "datasets/stealth_iqr_plot.png"
+OUTPUT_CSV = "datasets/spies_stealth_iqr.csv"
 TOP_N: Optional[int] = 10  # Поставь None, если нужно выгрузить ВСЕ выбросы сверх порога IQR
 
 

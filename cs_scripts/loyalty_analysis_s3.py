@@ -3,7 +3,7 @@ import pandas as pd
 import time
 from konon_anal.shared_loyalty import detect_shared_loyalty_cards
 
-DATASET_PATH = "/home/daniil/DataScience/MASTER_AIRLINES_DB_sorted.csv"
+DATASET_PATH = "../MASTER_AIRLINES_DB_sorted.csv"
 
 
 def main():
@@ -32,7 +32,7 @@ def main():
     pd.set_option('display.width', 1000)
     print(results.to_string(index=False))
 
-    output_path = "/home/daniil/DataScience/parsed_data/shared_loyalty_investigation.csv"
+    output_path = "../shared_loyalty_investigation.csv"
     results.to_csv(output_path, index=False, encoding='utf-8')
     print(f"\nОтчет сохранен в: {output_path}")
 

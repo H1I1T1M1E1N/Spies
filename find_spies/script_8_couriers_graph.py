@@ -4,8 +4,8 @@ import pandas as pd
 from dataclasses import dataclass
 from typing import List, Set, Tuple
 
-DATASET_PATH = "MASTER_AIRLINES_DB_sorted.csv"
-OUTPUT_CSV = "spies_couriers_turnaround.csv"
+DATASET_PATH = "datasets/MASTER_AIRLINES_DB_sorted.csv"
+OUTPUT_CSV = "datasets/spies_couriers_turnaround.csv"
 TOP_N = 15
 
 
