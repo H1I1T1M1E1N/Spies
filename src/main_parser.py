@@ -16,7 +16,7 @@ from Sort_ds import sort_master_db
 def get_resource_path(relative_path):
     """Получить абсолютный путь к ресурсу (работает и в dev, и в EXE)."""
     try:
-        base_path = sys._MEIPASS
+        base_path = os.path.dirname(sys.executable)
     except Exception:
         base_path = os.path.dirname(os.path.abspath(__file__))
     return os.path.join(base_path, relative_path)

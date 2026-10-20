@@ -8,7 +8,8 @@ echo [1/3] Установка зависимостей...
 pip install pandas numpy openpyxl PyYAML pymupdf pyinstaller
 
 echo [2/3] Очистка предыдущих сборок...
-rmdir /s /q build dist 2>nul
+rmdir /s /q build 2>nul
+del dist\DataParser.exe 2>nul
 del DataParser.spec 2>nul
 
 echo [3/3] Сборка EXE файла (это займёт 2-5 минут)...

@@ -277,16 +277,14 @@ import os
 from pathlib import Path
 from openpyxl import load_workbook
 import csv
+import re
 
 
-def parse_boarding_folder_fast(folder_path, output_csv="boarding_data.csv"):
+def parse_boarding_folder_fast(folder_path):
     """
     Быстрый парсер Excel-файлов из папки.
     Читает напрямую через openpyxl, только нужные ячейки.
     """
-    import re
-    from openpyxl import load_workbook
-
     folder = Path(folder_path)
     xlsx_files = sorted([f for f in folder.rglob('*.xlsx') if not f.name.startswith('~$')])
     total_files = len(xlsx_files)
@@ -295,110 +293,104 @@ def parse_boarding_folder_fast(folder_path, output_csv="boarding_data.csv"):
     total_rows = 0
     skipped_sheets = 0
 
-    with open(output_csv, 'w', newline='', encoding='utf-8') as csvfile:
-        fieldnames = ['first_name', 'last_name', 'flight_date', 'flight_number',
-                      'departure', 'arrival', 'pnr', 'ticket_number', 'ff_number']
-        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-        writer.writeheader()
+    rows = []
+    for file_idx, file_path in enumerate(xlsx_files, 1):
+        try:
+            wb = load_workbook(file_path, read_only=True, data_only=True)
 
-        for file_idx, file_path in enumerate(xlsx_files, 1):
-            try:
-                wb = load_workbook(file_path, read_only=True, data_only=True)
+            for sheet_name in wb.sheetnames:
+                ws = wb[sheet_name]
 
-                for sheet_name in wb.sheetnames:
-                    ws = wb[sheet_name]
+                try:
+                    # Читаем имя из B3 (row 3, col 2)
+                    name_raw = ws.cell(row=3, column=2).value
+                    if name_raw is None:
+                        skipped_sheets += 1
+                        continue
+                    name_raw = str(name_raw).strip()
 
-                    try:
-                        # Читаем имя из B3 (row 3, col 2)
-                        name_raw = ws.cell(row=3, column=2).value
-                        if name_raw is None:
-                            skipped_sheets += 1
-                            continue
-                        name_raw = str(name_raw).strip()
+                    # Убираем титулы MR/MRS/MS/DR
+                    name_clean = re.sub(r'^(MR|MRS|MS|DR)\.?\s*', '', name_raw, flags=re.IGNORECASE).strip().upper()
+                    name_parts = name_clean.split()
+                    first_name = name_parts[0] if len(name_parts) > 0 else ''
+                    last_name = name_parts[1] if len(name_parts) > 1 else ''
 
-                        # Убираем титулы MR/MRS/MS/DR
-                        name_clean = re.sub(r'^(MR|MRS|MS|DR)\.?\s*', '', name_raw, flags=re.IGNORECASE).strip().upper()
-                        name_parts = name_clean.split()
-                        first_name = name_parts[0] if len(name_parts) > 0 else ''
-                        last_name = name_parts[1] if len(name_parts) > 1 else ''
-
-                        # Если имя не удалось распарсить — пропускаем
-                        if not first_name:
-                            skipped_sheets += 1
-                            continue
-
-                        # A5 = row 5, col 1 (номер рейса)
-                        flight_number = ws.cell(row=5, column=1).value
-                        flight_number = str(flight_number).strip() if flight_number else ''
-
-                        # D7 = row 7, col 4 (аэропорт вылета)
-                        departure = ws.cell(row=7, column=4).value
-                        departure = str(departure).strip()[:3].upper() if departure else ''
-
-                        # H7 = row 7, col 8 (аэропорт прилета)
-                        arrival = ws.cell(row=7, column=8).value
-                        arrival = str(arrival).strip()[:3].upper() if arrival else ''
-
-                        # A9 = row 9, col 1 (дата)
-                        date_raw = ws.cell(row=9, column=1).value
-                        flight_date = ''
-                        if date_raw:
-                            date_str = str(date_raw)
-                            date_match = re.search(r'(\d{4}-\d{2}-\d{2})', date_str)
-                            if date_match:
-                                flight_date = date_match.group(1)
-
-                        # B13 = row 13, col 2 (PNR)
-                        pnr = ws.cell(row=13, column=2).value
-                        pnr = str(pnr).strip() if pnr else ''
-
-                        # E13 = row 13, col 5 (ticket)
-                        ticket_number = ws.cell(row=13, column=5).value
-                        ticket_number = str(ticket_number).strip() if ticket_number else ''
-
-                        # F3 = row 3, col 6 (FF number)
-                        ff_raw = ws.cell(row=3, column=6).value
-                        ff_number = ''
-                        if ff_raw:
-                            ff_str = str(ff_raw).strip()
-                            # FF number имеет формат "XX 123456789" (2 буквы + пробел + цифры)
-                            if re.match(r'^[A-Z]{2}\s+\d+$', ff_str):
-                                ff_number = ff_str
-
-                        writer.writerow({
-                            'first_name': first_name,
-                            'last_name': last_name,
-                            'flight_date': flight_date,
-                            'flight_number': flight_number,
-                            'departure': departure,
-                            'arrival': arrival,
-                            'pnr': pnr,
-                            'ticket_number': ticket_number,
-                            'ff_number': ff_number
-                        })
-                        total_rows += 1
-
-                    except Exception as e:
+                    # Если имя не удалось распарсить — пропускаем
+                    if not first_name:
                         skipped_sheets += 1
                         continue
 
-                wb.close()
+                    # A5 = row 5, col 1 (номер рейса)
+                    flight_number = ws.cell(row=5, column=1).value
+                    flight_number = str(flight_number).strip() if flight_number else ''
 
-                # Прогресс-бар
-                progress = (file_idx / total_files) * 100
-                print(
-                    f"\r[{file_idx}/{total_files}] {progress:.1f}% | строк: {total_rows} | пропущено листов: {skipped_sheets}",
-                    end='', flush=True)
+                    # D7 = row 7, col 4 (аэропорт вылета)
+                    departure = ws.cell(row=7, column=4).value
+                    departure = str(departure).strip()[:3].upper() if departure else ''
 
-            except Exception as e:
-                print(f"\nОшибка в файле {file_path.name}: {e}")
-                continue
+                    # H7 = row 7, col 8 (аэропорт прилета)
+                    arrival = ws.cell(row=7, column=8).value
+                    arrival = str(arrival).strip()[:3].upper() if arrival else ''
+
+                    # A9 = row 9, col 1 (дата)
+                    date_raw = ws.cell(row=9, column=1).value
+                    flight_date = ''
+                    if date_raw:
+                        date_str = str(date_raw)
+                        date_match = re.search(r'(\d{4}-\d{2}-\d{2})', date_str)
+                        if date_match:
+                            flight_date = date_match.group(1)
+
+                    # B13 = row 13, col 2 (PNR)
+                    pnr = ws.cell(row=13, column=2).value
+                    pnr = str(pnr).strip() if pnr else ''
+
+                    # E13 = row 13, col 5 (ticket)
+                    ticket_number = ws.cell(row=13, column=5).value
+                    ticket_number = str(ticket_number).strip() if ticket_number else ''
+
+                    # F3 = row 3, col 6 (FF number)
+                    ff_raw = ws.cell(row=3, column=6).value
+                    ff_number = ''
+                    if ff_raw:
+                        ff_str = str(ff_raw).strip()
+                        # FF number имеет формат "XX 123456789" (2 буквы + пробел + цифры)
+                        if re.match(r'^[A-Z]{2}\s+\d+$', ff_str):
+                            ff_number = ff_str
+
+                    rows.append({
+                        'first_name': first_name,
+                        'last_name': last_name,
+                        'flight_date': flight_date,
+                        'flight_number': flight_number,
+                        'departure': departure,
+                        'arrival': arrival,
+                        'pnr': pnr,
+                        'ticket_number': ticket_number,
+                        'ff_number': ff_number
+                    })
+                    total_rows += 1
+
+                except Exception as e:
+                    skipped_sheets += 1
+                    continue
+
+            wb.close()
+
+            # Прогресс-бар
+            progress = (file_idx / total_files) * 100
+            print(
+                f"\r[{file_idx}/{total_files}] {progress:.1f}% | строк: {total_rows} | пропущено листов: {skipped_sheets}",
+                end='', flush=True)
+
+        except Exception as e:
+           print(f"\nОшибка в файле {file_path.name}: {e}")
+           continue
 
     print(f"\n\nГотово! Всего записей: {total_rows}")
     print(f"Пропущено листов: {skipped_sheets}")
-    print(f"Результат сохранён в: {output_csv}")
 
-    return total_rows
+    return pd.DataFrame(total_rows)
 
 
 def parse_student2(json_path: str, yaml_path: str, boarding_folder: str) -> pd.DataFrame:
