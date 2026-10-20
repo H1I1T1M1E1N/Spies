@@ -21,10 +21,11 @@ pyinstaller --noconfirm ^
     --hidden-import=openpyxl ^
     --hidden-import=yaml ^
     --hidden-import=pymupdf ^
-    --hidden-import=konon_parser ^
-    --hidden-import=konon_parser.xml_parser ^
-    --hidden-import=konon_parser.pdf_parser ^
-    --collect-all konon_parser ^
+    --hidden-import=pymupdf.layout ^
+    --hidden-import=pymupdf.layout.onnx ^
+    --collect-all pymupdf ^
+    --collect-all pymupdf.layout ^
+    --copy-metadata pymupdf ^
     main_parser.py
 
 echo.

@@ -10,7 +10,7 @@ TARGET_COLUMNS = [
 
 def parse_boarding_data(input_path: str, output_path: str) -> pd.DataFrame:
     # 1. Читаем файл. Разделитель - точка с запятой. Пропуски - Not presented.
-    df_boarding = pd.read_csv('BoardingData.csv', sep=';', na_values=['Not presented', 'None'])
+    df_boarding = pd.read_csv(input_path, sep=';', na_values=['Not presented', 'None'])
 
     # Очищаем названия колонок от невидимых символов (например, ^M в конце Destination)
     df_boarding.columns = df_boarding.columns.str.strip()

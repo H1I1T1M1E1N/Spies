@@ -31,7 +31,7 @@ def parse_sirena(input_path: str, output_path: str) -> pd.DataFrame:
     ]
 
     df_sirena = pd.read_fwf(
-        'Sirena-export-fixed.tab',
+        input_path,
         widths=fwf_widths,
         skiprows=1,
         names=sirena_columns,
