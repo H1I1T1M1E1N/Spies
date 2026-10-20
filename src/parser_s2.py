@@ -390,7 +390,7 @@ def parse_boarding_folder_fast(folder_path):
     print(f"\n\nГотово! Всего записей: {total_rows}")
     print(f"Пропущено листов: {skipped_sheets}")
 
-    return pd.DataFrame(total_rows)
+    return pd.DataFrame(rows)
 
 
 def parse_student2(json_path: str, yaml_path: str, boarding_folder: str) -> pd.DataFrame:
